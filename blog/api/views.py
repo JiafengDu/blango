@@ -26,6 +26,7 @@ class TagViewSet(viewsets.ModelViewSet):
     return Response(post_serializer.data)
 
 class PostViewSet(viewsets.ModelViewSet):
+  # permission_classes = [AuthorModifyOrReadOnly]
   permission_classes = [AuthorModifyOrReadOnly | IsAdminUserForObject]
   queryset = Post.objects.all()
 
