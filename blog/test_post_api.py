@@ -94,7 +94,6 @@ class PostAPITestCsae(TestCase):
       "published_at": "2021-01-10T09:00:00Z",
     }
     resp = self.client.post("/api/v1/posts/", post_dict)
-    print(resp.content)
     post_id = resp.json()["id"]
     post = Post.objects.get(pk=post_id)
     self.assertEqual(post.title, post_dict["title"])
