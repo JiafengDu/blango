@@ -9,7 +9,7 @@ class AnonBurstThrottle(AnonRateThrottle):
 class UserSustainedThrottle(UserRateThrottle):
   scope = "user_sustained"
 
-class UserBurstTHrottle(UserRateTHrottle):
+class UserBurstThrottle(UserRateThrottle):
   scope = "user_burst"
 
   
