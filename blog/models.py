@@ -18,6 +18,9 @@ class AuthorProfile(models.Model):
 class Tag(models.Model):
   value = models.TextField(max_length=100, unique=True)
 
+  class Meta:
+    ordering = ["value"]
+
   def __str__(self):
     return self.value
 
@@ -30,6 +33,9 @@ class Comment(models.Model):
   created_at = models.DateTimeField(auto_now_add=True, db_index=True)
   modified_at = models.DateTimeField(auto_now=True)
 
+  class Meta:
+    ordering = ["id"]
+
 class Post(models.Model):
   author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
   created_at = models.DateTimeField(auto_now_add=True)
@@ -41,6 +47,9 @@ class Post(models.Model):
   content = models.TextField()
   tags = models.ManyToManyField(Tag, related_name="posts")
   comments = GenericRelation(Comment)
+
+  class Meta:
+    ordering = ["id"]
 
   def __str__(self):
     return self.title

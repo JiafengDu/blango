@@ -19,6 +19,7 @@ from blog.api.serializers import (
   TagSerializer,
 )
 from blog.api.permissions import AuthorModifyOrReadOnly, IsAdminUserForObject
+from blog.api.filters import PostFilterSet
 from blog.models import Post, Tag
 
 from blango_auth.models import User
@@ -38,14 +39,25 @@ class TagViewSet(viewsets.ModelViewSet):
   @action(methods=["get"], detail=True, name="Posts with the Tag")
   def posts(self, request, pk=None):
     tag = self.get_object()
-    post_serializer = PostSerializer(
-      tag.posts, many=True, context={"request": request}
-    )
-    return Response(post_serializer.data)
+    page = self.paginate_queryset(tag.posts)
+    
+    if page is not None:
+      post_serializer = PostSerializer(
+      page, many=True, context={"request": request}
+      )
+      return self.get_paginated_response(post_serializer.data)
+    else:
+      post_serializer = PostSerializer(
+        tag.posts, many=True, context={"request": request}
+      )
+      return Response(post_serializer.data)
+
 
 class PostViewSet(viewsets.ModelViewSet):
   permission_classes = [AuthorModifyOrReadOnly | IsAdminUserForObject]
   queryset = Post.objects.all()
+  filterset_class = PostFilterSet
+  ordering_fields = ["published_at", "author", "title", "slug"]
 
   def get_queryset(self):
     if self.request.user.is_anonymous:
@@ -99,8 +111,15 @@ class PostViewSet(viewsets.ModelViewSet):
     if request.user.is_anonymous:
       raise PermissionDenied("You must be logged in to see which Posts are yours")
     posts = self.get_queryset().filter(author=request.user)
-    serializer = PostSerializer(posts, many=True, context={"request": request})
-    return Response(serializer.data)
+
+    page = self.paginate_queryset(posts)
+    
+    if page is not None:
+      serializer = PostSerializer(page, many=True, context={"request": request})
+      return self.get_paginated_response(serializer.data)
+    else:
+      serializer = PostSerializer(posts, many=True, context={"request": request})
+      return Response(serializer.data)
   
   @method_decorator(cache_page(120))
   @method_decorator(vary_on_headers("Authorization", "Cookie"))
