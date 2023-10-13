@@ -4,6 +4,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.conf import settings
 
+from versatileimagefield.fields import VersatileImageField, PPOIField
+
 # Create your models here.
 class AuthorProfile(models.Model):
   user = models.OneToOneField(
@@ -47,6 +49,10 @@ class Post(models.Model):
   content = models.TextField()
   tags = models.ManyToManyField(Tag, related_name="posts")
   comments = GenericRelation(Comment)
+  hero_image = VersatileImageField(
+    upload_to="hero_images", ppoi_field="ppoi", null=True, blank=True
+  )
+  ppoi = PPOIField(null=True, blank=True)
 
   class Meta:
     ordering = ["id"]

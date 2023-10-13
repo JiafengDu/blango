@@ -20,6 +20,10 @@ class Dev(Configuration):
     # Build paths inside the project like this: BASE_DIR / 'subdir'.
     BASE_DIR = Path(__file__).resolve().parent.parent
 
+    # Defines where uploaded files are saved
+    # Defines which URL/path to serve media from
+    MEDIA_ROOT = BASE_DIR / "media"
+    MEDIA_URL = "/media/"
 
     # Quick-start development settings - unsuitable for production
     # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -64,6 +68,7 @@ class Dev(Configuration):
         'rest_framework.authtoken',
         'drf_yasg',
         'django_filters',
+        'versatileimagefield',
     ]
 
     CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
