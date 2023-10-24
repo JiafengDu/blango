@@ -3,6 +3,7 @@ import logging
 from django.shortcuts import render
 from django.utils import timezone
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
 
 from blog.models import Post
 from blog.forms import CommentForm
@@ -11,7 +12,10 @@ logger = logging.getLogger(__name__)
 
 # Create your views here.
 def post_table(request):
-  return render(request, "blog/post-table.html")
+  context = {
+    "post_list_url" : reverse("post-list")
+  }
+  return render(request, "blog/post-table.html", context)
 
 def get_ip(request):
   from django.http import HttpResponse
